@@ -14,7 +14,7 @@ const getStatesList = async function (req, res) {
     let states = cowinStates.data;
     res.status(200).send({ msg: "Successfully fetched data", data: states });
 
-  } 
+  }
   catch (err) {
     console.log(err.message);
     res.status(500).send({ msg: "Some error occured" });
@@ -23,78 +23,99 @@ const getStatesList = async function (req, res) {
 };
 
 
-const getDistrictsList = async function (req, res){
+const getDistrictsList = async function (req, res) {
 
-    try{ 
-        let id= req.params.stateId
-        console.log(" state: ", id)
+  try {
+    let id = req.params.stateId
+    console.log(" state: ", id)
 
-        let options = {
-            method: "get",
-            url : `https://cdn-api.co-vin.in/api/v2/admin/location/districts/${id}` //plz take 5 mins to revise template literals here
-        }
-        let response= await axios(options)
-
-        let districts= response.data
-        
-        console.log(response.data)
-        res.status(200).send( {msg: "Success", data: districts} )
-
+    let options = {
+      method: "get",
+      url: `https://cdn-api.co-vin.in/api/v2/admin/location/districts/${id}` //plz take 5 mins to revise template literals here
     }
-    catch(err) {
-        console.log(err.message)
-        res.status(500).send( { msg: "Something went wrong" } )
-    }
+    let response = await axios(options)
+
+    let districts = response.data
+
+    console.log(response.data)
+    res.status(200).send({ msg: "Success", data: districts })
+
+  }
+  catch (err) {
+    console.log(err.message)
+    res.status(500).send({ msg: "Something went wrong" })
+  }
 }
 
-const getByPin = async function (req, res){
+const getByPin = async function (req, res) {
 
-    try{ 
+  try {
 
-        let pin= req.query.pincode
-        let date= req.query.date
+    let pin = req.query.pincode
+    let date = req.query.date
 
-        let options = {
-          method : "get",
-          url : `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByPin?pincode=${pin}&date=${date}`
-        }
-        let response= await axios(options)
-        
-
-
-        let centers= response.data
-        console.log(centers)
-        res.status(200).send( {msg: "Success", data: centers} )
-
+    let options = {
+      method: "get",
+      url: `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByPin?pincode=${pin}&date=${date}`
     }
-    catch(err) {
-        console.log(err.message)
-        res.status(500).send( { msg: "Something went wrong" } )
-    }
+    let response = await axios(options)
+
+    let centers = response.data
+    console.log(centers)
+    res.status(200).send({ msg: "Success", data: centers })
+
+  }
+  catch (err) {
+    console.log(err.message)
+    res.status(500).send({ msg: "Something went wrong" })
+  }
 }
 
 
-const getOtp = async function (req, res){
+const getOtp = async function (req, res) {
 
-    try{ 
+  try {
 
-         let options = {
-          method : "post", // method has to be post
-          url : `https://cdn-api.co-vin.in/api/v2/auth/public/generateOTP`,
-          data: { "mobile": req.body.mobile  } // we are sending the json body in the data 
-        }
-        let response= await axios(options)
-
-        let id= response.data
-        res.status(200).send( {msg: "Success", data: id} )
-
+    let options = {
+      method: "post", // method has to be post
+      url: `https://cdn-api.co-vin.in/api/v2/auth/public/generateOTP`,
+      data: { "mobile": req.body.mobile } // we are sending the json body in the data 
     }
-    catch(err) {
-        console.log(err.message)
-        res.status(500).send( { msg: "Something went wrong" } )
-    }
+    let response = await axios(options)
+
+    let id = response.data
+    res.status(200).send({ msg: "Success", data: id })
+
+  }
+  catch (err) {
+    console.log(err.message)
+    res.status(500).send({ msg: "Something went wrong" })
+  }
 }
 
+const confirmOtp = async function (req, res) {
+
+  try {
+
+    let options = {
+      method: "post",
+      url: `https://cdn-api.co-vin.in/api/v2/auth/public/confirmOTP`,
+      data: {
+        "otp": req.body.otp,
+        "txnId": req.body.txnId
+      }
+    }
+    let response = await axios(options)
+
+    let token = response.data
+    res.status(200).send({ msg: "Success", data: token })
+
+  }
+  catch (err) {
+    console.log(err.message)
+    res.status(500).send({ msg: "Something went wrong" })
+  }
+}
 
 
 
@@ -102,3 +123,4 @@ module.exports.getStatesList = getStatesList;
 module.exports.getDistrictsList = getDistrictsList;
 module.exports.getByPin = getByPin;
 module.exports.getOtp = getOtp;
+module.exports.confirmOtp = confirmOtp;
